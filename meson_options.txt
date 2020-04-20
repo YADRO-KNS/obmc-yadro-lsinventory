@@ -1,0 +1,27 @@
+# Object mapper
+option('mapper-service',
+       type: 'string',
+       value: 'xyz.openbmc_project.ObjectMapper',
+       description: 'Object mapper service')
+option('mapper-path',
+       type: 'string',
+       value: '/xyz/openbmc_project/object_mapper',
+       description: 'Object mapper path')
+option('mapper-iface',
+       type: 'string',
+       value: 'xyz.openbmc_project.ObjectMapper',
+       description: 'Object mapper interface')
+
+# Inventory manager
+option('inventory-service',
+       type: 'string',
+       value: 'xyz.openbmc_project.Inventory.Manager',
+       description: 'Inventory service')
+option('inventory-path',
+       type: 'string',
+       value: '/xyz/openbmc_project/inventory',
+       description: 'Root path of inventory objects')
+option('inventory-iface',
+       type: 'string',
+       value: 'xyz.openbmc_project.Inventory.Item',
+       description: 'Common interface of inventory objects')
