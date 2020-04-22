@@ -5,8 +5,6 @@
 
 #include <getopt.h>
 
-#include <iostream>
-
 /**
  * @brief Print help usage info.
  *
@@ -14,17 +12,14 @@
  */
 static void printHelp(const char* app)
 {
-    std::cout << "Print BMC inventory list." << std::endl;
-    std::cout << "Copyright (c) 2020 YADRO." << std::endl;
-    std::cout << "Usage: " << app << " [OPTION...]" << std::endl;
-    std::cout << "  -n, --name=NAME     Print item with specified name only"
-              << std::endl;
-    std::cout << "  -a, --all           Also print nonexistent units"
-              << std::endl;
-    std::cout << "  -e, --empty         Also print empty properties"
-              << std::endl;
-    std::cout << "  -j, --json          Print in JSON format" << std::endl;
-    std::cout << "  -h, --help          Print this help and exit" << std::endl;
+    printf("Print BMC inventory list.\n");
+    printf("Copyright (c) 2020 YADRO.\n");
+    printf("Usage: %s [OPTION...]\n", app);
+    printf("  -n, --name=NAME  Print item with specified name only\n");
+    printf("  -a, --all        Also print nonexistent units\n");
+    printf("  -e, --empty      Also print empty properties\n");
+    printf("  -j, --json       Print in JSON format\n");
+    printf("  -h, --help       Print this help and exit\n");
 }
 
 /** @brief Application entry point. */
@@ -80,17 +75,16 @@ int main(int argc, char* argv[])
                 printHelp(argv[0]);
                 return EXIT_SUCCESS;
             default:
-                std::cerr << "Invalid option: " << argv[optind - 1]
-                          << std::endl;
+                fprintf(stderr, "Invalid option: %s\n", argv[optind - 1]);
                 return EXIT_FAILURE;
         }
     }
     if (optind < argc)
     {
-        std::cerr << "Invalid options: ";
+        fprintf(stderr, "Invalid options: ");
         while (optind < argc)
-            std::cerr << argv[optind++] << " ";
-        std::cerr << std::endl;
+            fprintf(stderr, "%s ", argv[optind++]);
+        fprintf(stderr, "\n");
         return EXIT_FAILURE;
     }
 
@@ -105,7 +99,7 @@ int main(int argc, char* argv[])
     }
     catch (std::exception& ex)
     {
-        std::cerr << "Error reading inventory: " << ex.what() << std::endl;
+        fprintf(stderr, "Error reading inventory: %s\n", ex.what());
         return EXIT_FAILURE;
     }
 

@@ -5,8 +5,6 @@
 
 #include <json.h>
 
-#include <iostream>
-
 void Printer::setNameFilter(const char* name)
 {
     nameFilter_ = name;
@@ -24,8 +22,8 @@ void Printer::allowEmptyProperties()
 
 void Printer::printText(const std::vector<InventoryItem>& items) const
 {
-    // Number of characters used for printing property name
-    static const size_t OutputPropertyWidth = 20;
+    // Size of the column with property name (formatting output)
+    static const size_t PropNmColWidth = 20;
 
     for (const InventoryItem& item : items)
     {
@@ -38,7 +36,7 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
             continue;
 
         // print title
-        std::cout << item.name << ": " << item.prettyName() << std::endl;
+        printf("%s: %s\n", item.name.c_str(), item.prettyName().c_str());
 
         // print properties
         for (const auto& property : item.properties)
@@ -60,12 +58,14 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
                 property.second);
 
             // filter out empty properties
-            if (!allowEmptyProperties_ && val.empty())
-                continue;
-
-            std::cout << "  " << property.first << ":";
-            std::cout.width(OutputPropertyWidth - property.first.length());
-            std::cout << " " << val << std::endl;
+            if (!val.empty() || allowEmptyProperties_)
+            {
+                const size_t nameLen = property.first.length();
+                printf("  %s: ", property.first.c_str());
+                if (nameLen < PropNmColWidth)
+                    printf("%*s", PropNmColWidth - nameLen, "");
+                printf("%s\n", val.c_str());
+            }
         }
     }
 }
@@ -121,9 +121,9 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
         json_object_object_add(json, item.name.c_str(), jsonItem);
     }
 
-    std::cout << json_object_to_json_string_ext(
-                     json, JSON_C_TO_STRING_PRETTY | JSON_C_TO_STRING_SPACED)
-              << std::endl;
+    printf("%s\n",
+           json_object_to_json_string_ext(json, JSON_C_TO_STRING_PRETTY |
+                                                    JSON_C_TO_STRING_SPACED));
 
     json_object_put(json);
 }
