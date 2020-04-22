@@ -70,24 +70,32 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
             break;
         }
 
-        // searching for end of digits in this sequence
-        const size_t end = a.name.find_first_not_of(digits, start);
-        if (end != b.name.find_first_not_of(digits, start))
+        // get ranage for numbers and compare order (size of numbers)
+        const size_t endA = a.name.find_first_not_of(digits, start);
+        const size_t endB = b.name.find_first_not_of(digits, start);
+        if (endA < endB)
+            return true;
+        if (endA > endB)
+            return false;
+
+        // compare as numeric values
+        try
+        {
+            const std::string txtA = a.name.substr(start, endA - start);
+            const unsigned long valueA = std::stoul(txtA);
+            const std::string txtB = b.name.substr(start, endB - start);
+            const unsigned long valueB = std::stoul(txtB);
+            if (valueA < valueB)
+                return true;
+            if (valueA > valueB)
+                return false;
+        }
+        catch (std::exception&)
         {
             break;
         }
 
-        // get and compare numbers
-        const unsigned long valueA =
-            std::stoul(a.name.substr(start, end - start));
-        const unsigned long valueB =
-            std::stoul(b.name.substr(start, end - start));
-        if (valueA < valueB)
-            return true;
-        if (valueA > valueB)
-            return false;
-
-        lastPos = end + 1;
+        lastPos = endA + 1;
     }
 
     // use default string comparer
