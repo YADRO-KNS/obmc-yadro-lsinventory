@@ -23,6 +23,7 @@ static void printHelp(const char* app)
               << std::endl;
     std::cout << "  -e, --empty         Also print empty properties"
               << std::endl;
+    std::cout << "  -j, --json          Print in JSON format" << std::endl;
     std::cout << "  -h, --help          Print this help and exit" << std::endl;
 }
 
