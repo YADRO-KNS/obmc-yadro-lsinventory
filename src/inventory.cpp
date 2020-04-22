@@ -52,13 +52,13 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
 {
     static const char* digits = "0123456789";
 
-    size_t lastDigit = 0;
-    while (lastDigit < a.name.length())
+    size_t lastNonDigit = 0;
+    while (lastNonDigit < a.name.length())
     {
         // searching for start of digits inside the name
-        const size_t start = a.name.find_first_of(digits, lastDigit);
+        const size_t start = a.name.find_first_of(digits, lastNonDigit);
         if (start == std::string::npos ||
-            start != b.name.find_first_of(digits, lastDigit))
+            start != b.name.find_first_of(digits, lastNonDigit))
         {
             break;
         }
@@ -86,7 +86,7 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
         if (valueA > valueB)
             return false;
 
-        lastDigit = end + 1;
+        lastNonDigit = end + 1;
     }
 
     // use default string comparer
