@@ -50,40 +50,46 @@ static std::string nameFromPath(const std::string& path)
  */
 static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
 {
-    static const char* digits = "0123456789";
-
-    size_t lastPos = 0;
-    while (lastPos < a.name.length())
+    const char* strA = a.name.c_str();
+    const char* strB = b.name.c_str();
+    while (true)
     {
-        // searching for start of digits inside the name
-        const size_t start = a.name.find_first_of(digits, lastPos);
-        if (start == std::string::npos ||
-            start != b.name.find_first_of(digits, lastPos))
-        {
-            break;
-        }
+        const char& chrA = *strA;
+        const char& chrB = *strB;
 
-        // check for equalty of names before digits
-        const size_t partSize = start - lastPos;
-        if (a.name.compare(lastPos, partSize, b.name, lastPos, partSize) != 0)
-        {
-            break;
-        }
+        // check for end of name
+        if (!chrA || !chrB)
+            return chrB;
 
-        // compare numeric values
-        char* end = nullptr;
-        const unsigned long valA = strtoul(a.name.c_str() + start, &end, 10);
-        const unsigned long valB = strtoul(b.name.c_str() + start, nullptr, 10);
-        if (valA != valB)
-        {
-            return valA < valB;
-        }
+        const bool isNumA = (chrA >= '0' && chrA <= '9');
+        const bool isNumB = (chrB >= '0' && chrB <= '9');
 
-        lastPos = end - a.name.c_str();
+        if (isNumA & isNumB)
+        {
+            // both names have numbers at the same position
+            char* endA = nullptr;
+            char* endB = nullptr;
+            const unsigned long valA = strtoul(strA, &endA, 10);
+            const unsigned long valB = strtoul(strB, &endB, 10);
+            if (valA != valB)
+                return valA < valB;
+            strA = endA;
+            strB = endB;
+        }
+        else if (isNumA ^ isNumB)
+        {
+            // only one of names has a number
+            return isNumB;
+        }
+        else
+        {
+            // no digits at position
+            if (chrA != chrB)
+                return chrA < chrB;
+            ++strA;
+            ++strB;
+        }
     }
-
-    // use default string comparer
-    return a.name < b.name;
 }
 
 bool InventoryItem::isPresent() const
