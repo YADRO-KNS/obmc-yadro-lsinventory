@@ -23,7 +23,7 @@ void Printer::allowEmptyProperties()
 void Printer::printText(const std::vector<InventoryItem>& items) const
 {
     // Size of the column with property name (formatting output)
-    static const size_t PropNmColWidth = 20;
+    static const int PropNmColWidth = 20;
 
     for (const InventoryItem& item : items)
     {
@@ -60,11 +60,10 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
             // filter out empty properties
             if (!val.empty() || allowEmptyProperties_)
             {
-                const size_t nameLen = property.first.length();
-                printf("  %s: ", property.first.c_str());
-                if (nameLen < PropNmColWidth)
-                    printf("%*s", PropNmColWidth - nameLen, "");
-                printf("%s\n", val.c_str());
+                const int nameLen = static_cast<int>(property.first.length());
+                printf("  %s: %*s%s\n", property.first.c_str(),
+                       nameLen < PropNmColWidth ? PropNmColWidth - nameLen : 0,
+                       "", val.c_str());
             }
         }
     }
