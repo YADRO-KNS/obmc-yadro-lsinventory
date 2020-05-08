@@ -64,7 +64,7 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
         const bool isNumA = (chrA >= '0' && chrA <= '9');
         const bool isNumB = (chrB >= '0' && chrB <= '9');
 
-        if (isNumA & isNumB)
+        if (isNumA && isNumB)
         {
             // both names have numbers at the same position
             char* endA = nullptr;
@@ -76,7 +76,7 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
             strA = endA;
             strB = endB;
         }
-        else if (isNumA ^ isNumB)
+        else if (isNumA || isNumB)
         {
             // only one of names has a number
             return isNumB;
