@@ -79,7 +79,7 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
         else if (isNumA || isNumB)
         {
             // only one of names has a number
-            return isNumB;
+            return isNumA;
         }
         else
         {
