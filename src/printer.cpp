@@ -7,17 +7,17 @@
 
 void Printer::setNameFilter(const char* name)
 {
-    nameFilter_ = name;
+    nameFilter = name;
 }
 
 void Printer::allowNonexitent()
 {
-    allowNonexitent_ = true;
+    printNonexitent = true;
 }
 
 void Printer::allowEmptyProperties()
 {
-    allowEmptyProperties_ = true;
+    printEmptyProperties = true;
 }
 
 void Printer::printText(const std::vector<InventoryItem>& items) const
@@ -28,11 +28,11 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
     for (const InventoryItem& item : items)
     {
         // filter out by name
-        if (!nameFilter_.empty() && nameFilter_ != item.name)
+        if (!nameFilter.empty() && nameFilter != item.name)
             continue;
 
         // filter out nonexistent items
-        if (!allowNonexitent_ && !item.isPresent())
+        if (!printNonexitent && !item.isPresent())
             continue;
 
         // print title
@@ -58,7 +58,7 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
                 property.second);
 
             // filter out empty properties
-            if (!val.empty() || allowEmptyProperties_)
+            if (!val.empty() || printEmptyProperties)
             {
                 const int nameLen = static_cast<int>(property.first.length());
                 printf("  %s: %*s%s\n", property.first.c_str(),
@@ -76,11 +76,11 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
     for (const InventoryItem& item : items)
     {
         // filter out by name
-        if (!nameFilter_.empty() && nameFilter_ != item.name)
+        if (!nameFilter.empty() && nameFilter != item.name)
             continue;
 
         // filter out nonexistent items
-        if (!allowNonexitent_ && !item.isPresent())
+        if (!printNonexitent && !item.isPresent())
             continue;
 
         json_object* jsonItem = json_object_new_object();
@@ -110,7 +110,7 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
                 property.second);
 
             // filter out empty properties
-            if (jsonProp || allowEmptyProperties_)
+            if (jsonProp || printEmptyProperties)
             {
                 json_object_object_add(jsonItem, property.first.c_str(),
                                        jsonProp);

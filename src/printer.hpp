@@ -45,9 +45,9 @@ class Printer
 
   private:
     /** @brief Filter for item name. */
-    std::string nameFilter_;
+    std::string nameFilter;
     /** @brief Allow printing of nonexistent items. */
-    bool allowNonexitent_ = false;
+    bool printNonexitent = false;
     /** @brief Allow printing of empty properties. */
-    bool allowEmptyProperties_ = false;
+    bool printEmptyProperties = false;
 };
