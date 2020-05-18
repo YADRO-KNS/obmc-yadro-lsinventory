@@ -91,7 +91,8 @@ int main(int argc, char* argv[])
     // print inventory list
     try
     {
-        const std::vector<InventoryItem> items = getInventory();
+        sdbusplus::bus::bus bus = sdbusplus::bus::new_default();
+        const std::vector<InventoryItem> items = getInventory(bus);
         if (printJson)
             printer.printJson(items);
         else

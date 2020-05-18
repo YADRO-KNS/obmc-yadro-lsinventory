@@ -4,6 +4,7 @@
 #pragma once
 
 #include <map>
+#include <sdbusplus/bus.hpp>
 #include <string>
 #include <variant>
 #include <vector>
@@ -40,6 +41,8 @@ struct InventoryItem
 /**
  * @brief Get all inventory items.
  *
+ * @param[in] bus - D-Bus instance to read inventory
+ *
  * @return array with inventory items
  */
-std::vector<InventoryItem> getInventory();
+std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus);

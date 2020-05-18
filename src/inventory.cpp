@@ -3,9 +3,7 @@
 
 #include "inventory.hpp"
 
-#include "config.hpp"
-
-#include <sdbusplus/bus.hpp>
+#include <config.hpp>
 
 /**
  * @brief Construct item name from its path.
@@ -106,11 +104,9 @@ std::string InventoryItem::prettyName() const
     return std::string();
 }
 
-std::vector<InventoryItem> getInventory()
+std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
 {
     std::vector<InventoryItem> items;
-
-    sdbusplus::bus::bus bus = sdbusplus::bus::new_default();
 
     // get all inventory items
     auto subTree = bus.new_method_call(MAPPER_SERVICE, MAPPER_PATH,
