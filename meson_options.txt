@@ -25,3 +25,8 @@ option('inventory-iface',
        type: 'string',
        value: 'xyz.openbmc_project.Inventory.Item',
        description: 'Common interface of inventory objects')
+
+# Unit tests support
+option('tests',
+       type: 'feature',
+       description: 'Build tests')
