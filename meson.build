@@ -9,8 +9,11 @@ project(
    'cpp_std=c++17',
   ],
   license: 'Apache-2.0',
-  version: '1.0',
 )
+
+version = vcs_tag(command: [ 'git', 'describe', '--always', '--dirty', '--long' ],
+                  input: 'src/version.hpp.in',
+                  output: 'version.hpp')
 
 conf = configuration_data()
 conf.set_quoted('MAPPER_SERVICE', get_option('mapper-service'))
@@ -27,6 +30,7 @@ subdir('test')
 executable(
   'lsinventory',
   [
+    version,
     'src/main.cpp',
     'src/inventory.cpp',
     'src/printer.cpp',

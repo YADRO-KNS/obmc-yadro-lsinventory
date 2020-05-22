@@ -5,6 +5,8 @@
 
 #include <getopt.h>
 
+#include <version.hpp>
+
 /**
  * @brief Print help usage info.
  *
@@ -14,6 +16,7 @@ static void printHelp(const char* app)
 {
     printf("Print BMC inventory list.\n");
     printf("Copyright (c) 2020 YADRO.\n");
+    printf("Version " VERSION "\n");
     printf("Usage: %s [OPTION...]\n", app);
     printf("  -n, --name=NAME  Print item with specified name only\n");
     printf("  -a, --all        Also print nonexistent units\n");
