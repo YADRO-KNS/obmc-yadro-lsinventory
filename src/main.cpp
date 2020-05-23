@@ -2,10 +2,9 @@
 // Copyright (C) 2020 YADRO
 
 #include "printer.hpp"
+#include <version.hpp>
 
 #include <getopt.h>
-
-#include <version.hpp>
 
 /**
  * @brief Print help usage info.
