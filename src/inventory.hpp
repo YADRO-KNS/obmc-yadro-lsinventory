@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include <map>
 #include <sdbusplus/bus.hpp>
+
+#include <map>
 #include <string>
 #include <variant>
 #include <vector>
@@ -41,7 +42,7 @@ struct InventoryItem
 /**
  * @brief Get all inventory items.
  *
- * @param[in] bus - D-Bus instance to read inventory
+ * @param[in] bus D-Bus instance to read inventory
  *
  * @return array with inventory items
  */

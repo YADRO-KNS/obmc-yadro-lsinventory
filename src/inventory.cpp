@@ -3,18 +3,18 @@
 
 #include "inventory.hpp"
 
-#include <config.hpp>
+#include "config.hpp"
 
 /**
  * @brief Construct item name from its path.
  *
- * @param[in] path - D-Bus path of the item
+ * @param[in] path D-Bus path of the item
  *
  * @return inventory item name
  */
 static std::string nameFromPath(const std::string& path)
 {
-    size_t lastSlash = path.find_last_of('/');
+    size_t lastSlash = path.rfind('/');
 
     // some objects (such as CPU's cores) have non-unique name,
     // for these items we should include parent node as prefix
@@ -25,14 +25,18 @@ static std::string nameFromPath(const std::string& path)
         if (path.compare(lastSlash + 1, coreName.length(), coreName) == 0)
         {
             // include CPU name (parent node)
-            lastSlash = path.find_last_of('/', lastSlash - 1);
+            lastSlash = path.rfind('/', lastSlash - 1);
         }
     }
 
     if (lastSlash == std::string::npos)
+    {
         return path;
+    }
     else
+    {
         return path.substr(lastSlash + 1);
+    }
 }
 
 /**
@@ -41,8 +45,8 @@ static std::string nameFromPath(const std::string& path)
  * Comparsion based on digits inside the name:
  * cpu1/core2 is less than cpu1/core10, but grater than cpu0/core10.
  *
- * @param[in] a - first item to compare
- * @param[in] b - second item to compare
+ * @param[in] a first item to compare
+ * @param[in] b second item to compare
  *
  * @return comparsion result, true if a < b
  */
@@ -57,10 +61,12 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
 
         // check for end of name
         if (!chrA || !chrB)
+        {
             return chrB;
+        }
 
-        const bool isNumA = (chrA >= '0' && chrA <= '9');
-        const bool isNumB = (chrB >= '0' && chrB <= '9');
+        const bool isNumA = isdigit(chrA);
+        const bool isNumB = isdigit(chrB);
 
         if (isNumA && isNumB)
         {
@@ -83,7 +89,9 @@ static bool humanCompare(const InventoryItem& a, const InventoryItem& b)
         {
             // no digits at position
             if (chrA != chrB)
+            {
                 return chrA < chrB;
+            }
             ++strA;
             ++strB;
         }
@@ -100,7 +108,9 @@ std::string InventoryItem::prettyName() const
 {
     const auto& it = properties.find("PrettyName");
     if (it != properties.end())
+    {
         return std::get<std::string>(it->second);
+    }
     return std::string();
 }
 

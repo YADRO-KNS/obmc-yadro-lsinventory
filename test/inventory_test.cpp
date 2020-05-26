@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright (C) 2020 YADRO
 
-#include <inventory.hpp>
+#include "inventory.hpp"
+
 #include <sdbusplus/test/sdbus_mock.hpp>
 
 using ::testing::_;
@@ -17,8 +18,7 @@ class InventoryTest : public ::testing::Test
 {
   protected:
     InventoryTest() : bus(sdbusplus::get_mocked_new(&mock))
-    {
-    }
+    {}
 
     testing::NiceMock<sdbusplus::SdBusMock> mock;
     sdbusplus::bus::bus bus;

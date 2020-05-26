@@ -10,9 +10,9 @@ void Printer::setNameFilter(const char* name)
     nameFilter = name;
 }
 
-void Printer::allowNonexitent()
+void Printer::allowNonPresent()
 {
-    printNonexitent = true;
+    printNonPresent = true;
 }
 
 void Printer::allowEmptyProperties()
@@ -27,13 +27,10 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
 
     for (const InventoryItem& item : items)
     {
-        // filter out by name
-        if (!nameFilter.empty() && nameFilter != item.name)
+        if (!checkFilter(item))
+        {
             continue;
-
-        // filter out nonexistent items
-        if (!printNonexitent && !item.isPresent())
-            continue;
+        }
 
         // print title
         printf("%s: %s\n", item.name.c_str(), item.prettyName().c_str());
@@ -75,13 +72,10 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
 
     for (const InventoryItem& item : items)
     {
-        // filter out by name
-        if (!nameFilter.empty() && nameFilter != item.name)
+        if (!checkFilter(item))
+        {
             continue;
-
-        // filter out nonexistent items
-        if (!printNonexitent && !item.isPresent())
-            continue;
+        }
 
         json_object* jsonItem = json_object_new_object();
 
@@ -125,4 +119,13 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
                                                     JSON_C_TO_STRING_SPACED));
 
     json_object_put(json);
+}
+
+bool Printer::checkFilter(const InventoryItem& item) const
+{
+    return
+        // filter out by name
+        (nameFilter.empty() || nameFilter == item.name) &&
+        // filter out non-present items
+        (printNonPresent || item.isPresent());
 }
