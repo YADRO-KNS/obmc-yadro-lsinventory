@@ -22,7 +22,7 @@ static std::string nameFromPath(const std::string& path)
     {
         // check for core item
         static const std::string coreName = "core";
-        if (path.compare(lastSlash + 1, coreName.length(), coreName) == 0)
+        if (path.find(coreName, lastSlash + 1) != std::string::npos)
         {
             // include CPU name (parent node)
             lastSlash = path.rfind('/', lastSlash - 1);
