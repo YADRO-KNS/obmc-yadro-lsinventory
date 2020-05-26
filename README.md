@@ -4,8 +4,7 @@ list stored by OpenBMC.
 
 ## Build with OpenBMC SDK
 OpenBMC SDK contains toolchain and all dependencies needed for building the
-project. See [official documentation](https://github.com/openbmc/docs/blob/master/development/dev-environment.md#download-and-install-sdk)
-for details.
+project. See [official documentation](https://github.com/openbmc/docs/blob/master/development/dev-environment.md#download-and-install-sdk) for details.
 
 Build steps:
 ```sh
