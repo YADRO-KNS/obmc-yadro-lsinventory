@@ -101,6 +101,8 @@ TEST_F(InventoryTest, BooleanProperty)
 
     EXPECT_CALL(mock, sd_bus_message_at_end)
         .WillOnce(Return(0))
+        .WillOnce(Return(0))
+        .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(0))
@@ -110,7 +112,12 @@ TEST_F(InventoryTest, BooleanProperty)
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
             // callback for GetSubTree
             const char** s = static_cast<const char**>(p);
-            *s = "dummy";
+            *s = "/xyz/openbmc_project/inventory/dummy";
+            return 0;
+        }))
+        .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
+            const char** s = static_cast<const char**>(p);
+            *s = "xyz.openbmc_project.dummy";
             return 0;
         }))
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
@@ -149,6 +156,8 @@ TEST_F(InventoryTest, NumericProperty)
 
     EXPECT_CALL(mock, sd_bus_message_at_end)
         .WillOnce(Return(0))
+        .WillOnce(Return(0))
+        .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(0))
@@ -158,7 +167,12 @@ TEST_F(InventoryTest, NumericProperty)
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
             // callback for GetSubTree
             const char** s = static_cast<const char**>(p);
-            *s = "dummy";
+            *s = "/xyz/openbmc_project/inventory/dummy";
+            return 0;
+        }))
+        .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
+            const char** s = static_cast<const char**>(p);
+            *s = "xyz.openbmc_project.dummy";
             return 0;
         }))
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
@@ -194,6 +208,8 @@ TEST_F(InventoryTest, StringProperty)
 
     EXPECT_CALL(mock, sd_bus_message_at_end)
         .WillOnce(Return(0))
+        .WillOnce(Return(0))
+        .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(1))
         .WillOnce(Return(0))
@@ -208,7 +224,12 @@ TEST_F(InventoryTest, StringProperty)
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
             // callback for GetSubTree
             const char** s = static_cast<const char**>(p);
-            *s = "dummy";
+            *s = "/xyz/openbmc_project/inventory/dummy";
+            return 0;
+        }))
+        .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
+            const char** s = static_cast<const char**>(p);
+            *s = "xyz.openbmc_project.dummy";
             return 0;
         }))
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
