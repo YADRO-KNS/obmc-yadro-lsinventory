@@ -30,3 +30,8 @@ option('inventory-iface',
 option('tests',
        type: 'feature',
        description: 'Build tests')
+
+option('remote-host-support',
+       type: 'feature',
+       value: 'disabled',
+       description: 'Remote host support')

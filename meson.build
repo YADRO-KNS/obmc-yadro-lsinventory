@@ -22,6 +22,7 @@ conf.set_quoted('MAPPER_IFACE', get_option('mapper-iface'))
 conf.set_quoted('INVENTORY_SERVICE', get_option('inventory-service'))
 conf.set_quoted('INVENTORY_PATH', get_option('inventory-path'))
 conf.set_quoted('INVENTORY_IFACE', get_option('inventory-iface'))
+conf.set('REMOTE_HOST_SUPPORT', get_option('remote-host-support').enabled())
 configure_file(output: 'config.hpp', configuration: conf)
 
 build_tests = get_option('tests')
