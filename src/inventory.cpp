@@ -127,17 +127,22 @@ std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
         subTreeObjects;
     bus.call(subTree).read(subTreeObjects);
 
-    for (const auto& obj : subTreeObjects)
+    for (const auto& [path, objects] : subTreeObjects)
     {
         InventoryItem item;
-        item.name = nameFromPath(obj.first);
+        item.name = nameFromPath(path);
 
-        // get all item's properties
-        auto getProps =
-            bus.new_method_call(INVENTORY_SERVICE, obj.first.c_str(),
-                                "org.freedesktop.DBus.Properties", "GetAll");
-        getProps.append("");
-        bus.call(getProps).read(item.properties);
+        for (const auto& [service, _] : objects)
+        {
+            // get all item's properties
+            auto getProps = bus.new_method_call(
+                service.c_str(), path.c_str(),
+                "org.freedesktop.DBus.Properties", "GetAll");
+            getProps.append("");
+            std::map<std::string, InventoryItem::propval_t> properties;
+            bus.call(getProps).read(properties);
+            item.properties.merge(properties);
+        }
 
         // some properties have spaces at the end, strip them
         for (auto& property : item.properties)

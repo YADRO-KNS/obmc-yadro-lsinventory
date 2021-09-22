@@ -13,17 +13,13 @@ option('mapper-iface',
        description: 'Object mapper interface')
 
 # Inventory manager
-option('inventory-service',
-       type: 'string',
-       value: 'xyz.openbmc_project.Inventory.Manager',
-       description: 'Inventory service')
 option('inventory-path',
        type: 'string',
        value: '/xyz/openbmc_project/inventory',
        description: 'Root path of inventory objects')
 option('inventory-iface',
        type: 'string',
-       value: 'xyz.openbmc_project.Inventory.Item',
+       value: 'xyz.openbmc_project.Inventory.Decorator.Asset',
        description: 'Common interface of inventory objects')
 
 # Unit tests support
