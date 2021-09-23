@@ -11,7 +11,7 @@ test(
     dependencies: [
       dependency('gmock', disabler: true, required: build_tests),
       dependency('gtest', main: true, disabler: true, required: build_tests),
-      dependency('sdbusplus'),
+      sdbusplus,
     ],
     include_directories: '../src',
   )

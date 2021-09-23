@@ -3,7 +3,7 @@
 
 #include "printer.hpp"
 
-#include <json.h>
+#include <nlohmann/json.hpp>
 
 void Printer::setNameFilter(const char* name)
 {
@@ -68,7 +68,7 @@ void Printer::printText(const std::vector<InventoryItem>& items) const
 
 void Printer::printJson(const std::vector<InventoryItem>& items) const
 {
-    json_object* json = json_object_new_object();
+    nlohmann::json json = nlohmann::json::object();
 
     for (const InventoryItem& item : items)
     {
@@ -77,48 +77,33 @@ void Printer::printJson(const std::vector<InventoryItem>& items) const
             continue;
         }
 
-        json_object* jsonItem = json_object_new_object();
+        nlohmann::json jsonItem = nlohmann::json::object();
 
         // print properties
         for (const auto& property : item.properties)
         {
-            json_object* jsonProp = nullptr;
+            nlohmann::json jsonProp;
 
             // get value from variant
-            std::visit(
-                [&jsonProp](auto&& arg) {
-                    using T = std::decay_t<decltype(arg)>;
-                    if constexpr (std::is_same_v<T, bool>)
-                        jsonProp = json_object_new_boolean(arg);
-                    else if constexpr (std::is_arithmetic<T>::value)
-                        jsonProp =
-                            json_object_new_int64(static_cast<int64_t>(arg));
-                    else if constexpr (std::is_same_v<T, std::string>)
-                    {
-                        if (!arg.empty())
-                            jsonProp = json_object_new_string(arg.c_str());
-                    }
-                    else
-                        static_assert(T::value, "Unhandled value type");
-                },
-                property.second);
+            std::visit([&jsonProp](auto&& arg) { jsonProp = arg; },
+                       property.second);
 
-            // filter out empty properties
-            if (jsonProp || printEmptyProperties)
+            const bool isEmpty =
+                (jsonProp.is_string() ? jsonProp == "" : jsonProp.empty());
+            if (!isEmpty || printEmptyProperties)
             {
-                json_object_object_add(jsonItem, property.first.c_str(),
-                                       jsonProp);
+                jsonItem.emplace(property.first, jsonProp);
             }
         }
 
-        json_object_object_add(json, item.name.c_str(), jsonItem);
+        if (!jsonItem.empty())
+        {
+            json.emplace(item.name, jsonItem);
+        }
     }
 
-    printf("%s\n",
-           json_object_to_json_string_ext(json, JSON_C_TO_STRING_PRETTY |
-                                                    JSON_C_TO_STRING_SPACED));
-
-    json_object_put(json);
+    constexpr auto JsonPrettyLookOffset = 2;
+    printf("%s\n", json.dump(JsonPrettyLookOffset).c_str());
 }
 
 bool Printer::checkFilter(const InventoryItem& item) const
