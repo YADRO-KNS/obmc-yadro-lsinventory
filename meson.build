@@ -24,8 +24,23 @@ conf.set_quoted('INVENTORY_IFACE', get_option('inventory-iface'))
 conf.set('REMOTE_HOST_SUPPORT', get_option('remote-host-support').enabled())
 configure_file(output: 'config.hpp', configuration: conf)
 
-build_tests = get_option('tests')
-subdir('test')
+sdbusplus = dependency('sdbusplus', required: false)
+if not sdbusplus.found()
+    sdbusplus_proj = subproject('sdbusplus', required: true)
+    sdbusplus = sdbusplus_proj.get_variable('sdbusplus_dep')
+endif
+
+if meson.get_compiler('cpp').has_header('nlohmann/json.hpp')
+    nlohmann_json = declare_dependency()
+else
+    subproject('nlohmann', required: true)
+    nlohmann_json = declare_dependency(
+        include_directories: [
+            'subproject/nlohmann/single_include',
+            'subproject/nlohmann/single_include/nlohmann',
+        ]
+    )
+endif
 
 executable(
   'lsinventory',
@@ -36,8 +51,13 @@ executable(
     'src/printer.cpp',
   ],
   dependencies: [
-    dependency('sdbusplus'),
-    dependency('json-c'),
+    sdbusplus,
+    nlohmann_json,
   ],
   install: true
 )
+
+build_tests = get_option('tests')
+if not build_tests.disabled()
+    subdir('test')
+endif
