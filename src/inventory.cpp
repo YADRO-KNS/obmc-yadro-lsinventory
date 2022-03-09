@@ -5,6 +5,8 @@
 
 #include "config.hpp"
 
+#include <unordered_set>
+
 /**
  * @brief Construct item name from its path.
  *
@@ -114,10 +116,29 @@ std::string InventoryItem::prettyName() const
     return std::string();
 }
 
+void InventoryItem::merge(InventoryItem::Properties& props)
+{
+    for (auto& [name, value] : props)
+    {
+        // some properties have spaces at the end, strip them
+        if (std::holds_alternative<std::string>(value))
+        {
+            std::string& v = std::get<std::string>(value);
+            v.erase(std::find_if(v.rbegin(), v.rend(),
+                                 [](int ch) { return !std::isspace(ch); })
+                        .base(),
+                    v.end());
+        }
+
+        properties[name] = std::move(value);
+    }
+}
+
 std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
 {
     std::vector<InventoryItem> items;
 
+#ifndef USE_VEGMAN_HACK
     // get all inventory items
     auto subTree = bus.new_method_call(MAPPER_SERVICE, MAPPER_PATH,
                                        MAPPER_IFACE, "GetSubTree");
@@ -139,26 +160,67 @@ std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
                 service.c_str(), path.c_str(),
                 "org.freedesktop.DBus.Properties", "GetAll");
             getProps.append("");
-            std::map<std::string, InventoryItem::propval_t> properties;
+            InventoryItem::Properties properties;
             bus.call(getProps).read(properties);
-            item.properties.merge(properties);
-        }
-
-        // some properties have spaces at the end, strip them
-        for (auto& property : item.properties)
-        {
-            if (std::holds_alternative<std::string>(property.second))
-            {
-                std::string& v = std::get<std::string>(property.second);
-                v.erase(std::find_if(v.rbegin(), v.rend(),
-                                     [](int ch) { return !std::isspace(ch); })
-                            .base(),
-                        v.end());
-            }
+            item.merge(properties);
         }
 
         items.emplace_back(item);
     }
+#else
+    using IfaceName = std::string;
+    using Ifaces = std::map<IfaceName, InventoryItem::Properties>;
+    using Objects = std::map<sdbusplus::message::object_path, Ifaces>;
+
+    static const std::vector<std::pair<std::string, std::string>>
+        inventoryServices{
+            {EM_SERVICE, EM_ROOT_PATH},
+            {SMBIOS_SERVICE, SMBIOS_ROOT_PATH},
+            {PCIE_SERVICE, PCIE_ROOT_PATH},
+            {STORAGE_SERVICE, STORAGE_ROOT_PATH},
+        };
+
+    static const std::unordered_set<IfaceName> wantedIfaces{
+        "xyz.openbmc_project.Inventory.Decorator.Asset",
+        "xyz.openbmc_project.Inventory.Decorator.AssetTag",
+        "xyz.openbmc_project.Inventory.Decorator.Revision",
+        "xyz.openbmc_project.Inventory.Item",
+        "xyz.openbmc_project.Inventory.Item.Chassis",
+        "xyz.openbmc_project.Inventory.Item.Cpu",
+        "xyz.openbmc_project.Inventory.Item.Dimm",
+        "xyz.openbmc_project.Inventory.Item.Drive",
+        "xyz.openbmc_project.PCIe.Device",
+        "xyz.openbmc_project.State.Decorator.OperationalStatus",
+    };
+
+    for (const auto& [service, rootpath] : inventoryServices)
+    {
+        auto method = bus.new_method_call(service.c_str(), rootpath.c_str(),
+                                          "org.freedesktop.DBus.ObjectManager",
+                                          "GetManagedObjects");
+        Objects objects;
+        bus.call(method).read(objects);
+
+        for (auto& [path, object] : objects)
+        {
+            InventoryItem item;
+
+            for (auto& [iface, props] : object)
+            {
+                if (wantedIfaces.find(iface) != wantedIfaces.end())
+                {
+                    item.merge(props);
+                }
+            }
+
+            if (!item.properties.empty())
+            {
+                item.name = nameFromPath(path.str);
+                items.emplace_back(item);
+            }
+        }
+    }
+#endif
 
     // sort in human readable order
     std::sort(items.begin(), items.end(), humanCompare);

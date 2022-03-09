@@ -16,13 +16,16 @@
  */
 struct InventoryItem
 {
-    using propval_t = std::variant<int64_t, std::string, bool>;
+    using PropName = std::string;
+    using PropValue = std::variant<int64_t, uint64_t, uint32_t, uint16_t,
+                                   uint8_t, std::string, bool>;
+    using Properties = std::map<PropName, PropValue>;
 
     /** @brief Name of the item. */
     std::string name;
 
     /** @brief Item's properties. */
-    std::map<std::string, propval_t> properties;
+    Properties properties;
 
     /**
      * @brief Get item present flag.
@@ -37,6 +40,13 @@ struct InventoryItem
      * @return pretty name, can be empty
      */
     std::string prettyName() const;
+
+    /**
+     * @brief Merge properties into the internal container.
+     *
+     * @param props - Properties map.
+     */
+    void merge(Properties& props);
 };
 
 /**
