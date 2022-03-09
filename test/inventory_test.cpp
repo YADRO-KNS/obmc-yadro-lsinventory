@@ -131,6 +131,14 @@ TEST_F(InventoryTest, BooleanProperty)
         .WillOnce(Return(0));
     EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("x")))
         .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("t")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("u")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("q")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("y")))
+        .WillOnce(Return(0));
     EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("b")))
         .WillOnce(Return(1));
     EXPECT_CALL(mock, sd_bus_message_read_basic(_, 'b', _))
@@ -216,6 +224,14 @@ TEST_F(InventoryTest, StringProperty)
         .WillOnce(Return(1));
 
     EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("x")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("t")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("u")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("q")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("y")))
         .WillOnce(Return(0));
     EXPECT_CALL(mock, sd_bus_message_verify_type(_, 'v', StrEq("s")))
         .WillOnce(Return(1));

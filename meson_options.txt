@@ -31,3 +31,29 @@ option('remote-host-support',
        type: 'feature',
        value: 'disabled',
        description: 'Remote host support')
+
+option('use-vegman-hack',
+       type: 'feature',
+       value: 'disabled',
+       description: 'Use VEGMAN-specific hack to get inventory')
+
+option('em-service', type: 'string',
+       value: 'xyz.openbmc_project.EntityManager',
+       description: 'Entity Manager service name')
+option('em-root-path', type: 'string', value: '/',
+       description: 'Root path of Entity Manager')
+option('smbios-service', type: 'string',
+       value: 'xyz.openbmc_project.Smbios.MDR_V2',
+       description: 'SMBIOS MDR_V2 serivce name')
+option('smbios-root-path', type: 'string',
+       value: '/xyz/openbmc_project/inventory',
+       description: 'SMBIOS MDR_V2 service root path')
+option('pcie-service', type: 'string', value: 'xyz.openbmc_project.PCIe',
+       description: 'PECI-PCIE serivce name')
+option('pcie-root-path', type: 'string', value: '/',
+       description: 'PECI-PCIE service root path')
+option('storage-service', type: 'string', value: 'com.yadro.Storage',
+       description: 'Storage Manager service name')
+option('storage-root-path', type: 'string', value: '/',
+       description: 'Storage Manager service root path')
+
