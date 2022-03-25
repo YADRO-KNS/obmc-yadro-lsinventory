@@ -178,6 +178,7 @@ std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
             {SMBIOS_SERVICE, SMBIOS_ROOT_PATH},
             {PCIE_SERVICE, PCIE_ROOT_PATH},
             {STORAGE_SERVICE, STORAGE_ROOT_PATH},
+            {NET_ADAPTER_SERVICE, NET_ADAPTER_ROOT_PATH},
         };
 
     static const std::unordered_set<IfaceName> wantedIfaces{
@@ -189,6 +190,7 @@ std::vector<InventoryItem> getInventory(sdbusplus::bus::bus& bus)
         "xyz.openbmc_project.Inventory.Item.Cpu",
         "xyz.openbmc_project.Inventory.Item.Dimm",
         "xyz.openbmc_project.Inventory.Item.Drive",
+        "xyz.openbmc_project.Inventory.Item.NetworkInterface",
         "xyz.openbmc_project.PCIe.Device",
         "xyz.openbmc_project.State.Decorator.OperationalStatus",
     };

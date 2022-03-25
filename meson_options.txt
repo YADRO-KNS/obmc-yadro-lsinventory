@@ -56,4 +56,9 @@ option('storage-service', type: 'string', value: 'com.yadro.Storage',
        description: 'Storage Manager service name')
 option('storage-root-path', type: 'string', value: '/',
        description: 'Storage Manager service root path')
+option('network-adapter-service', type: 'string',
+       value: 'com.yadro.NetworkAdapter',
+       description: 'Host\'s Network Adapters Manager service')
+option('network-adapter-root-path', type: 'string', value: '/',
+       description: 'Host\'s Network Adapters Manager service root path')
 

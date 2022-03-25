@@ -34,6 +34,9 @@ if use_vegman_hack.enabled()
   conf.set_quoted('PCIE_ROOT_PATH', get_option('pcie-root-path'))
   conf.set_quoted('STORAGE_SERVICE', get_option('storage-service'))
   conf.set_quoted('STORAGE_ROOT_PATH', get_option('storage-root-path'))
+  conf.set_quoted('NET_ADAPTER_SERVICE', get_option('network-adapter-service'))
+  conf.set_quoted('NET_ADAPTER_ROOT_PATH',
+                  get_option('network-adapter-root-path'))
 endif
 configure_file(output: 'config.hpp', configuration: conf)
 
